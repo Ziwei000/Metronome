@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>My_metronome</title>
+</head>
+<body>
+    <h1>MyMetronome</h1>
+    Input a BPM to update the speed the LED blinks at</br>
+    <input id="input_bpm" type="text" />
+    <input type="button" id="putbpm" value="PUT_BPM" onclick="put_BPM()"><p \>
+    <input type="button" id="getbpm" value="GET_BPM" onclick="get_BPM()">
+    <p class="gotbpm"></p>
+    <input type="button" id="getmin" value="GET_MIN" onclick="get_MIN()"><br>
+    <p class="gotmin"></p>
+    <input type="button" id="getmax" value="GET_MAX" onclick="get_MAX()"><br>
+    <p class="gotmax"></p>
+    <input type="button" id="delmin" value="DELETE_MIN" onclick="delete_MIN()">
+    ((refresh GET_MIN button or check the console to see the server's DELETE_MIN response if succeed...)<p \>
+    <input type="button" id="delmax" value="DELETE_MAX" onclick="delete_MAX()">
+    ((refresh GET_MAX button or check the console to see the server's DELETE_MAX response if succeed...)<p \>
+    <input type="button" id="set_60" value="SET_TO_60" onclick="javascript:window.location.href='http://192.168.0.41:8080/set60'">
+    (for test--set current bpm to 60...)<br>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        const gotbpm = document.querySelector('.gotbpm');
+        const gotmin = document.querySelector('.gotmin');
+        const gotmax = document.querySelector('.gotmax');
+        function put_BPM(){
+            var bpm = document.getElementById("input_bpm").value;
+            (async () => {
+              const rawResponse = await fetch('http://localhost:8080/bpm', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: bpm//stringify({BPM:bpm})
+              });
+              const content = await rawResponse.json();
+              console.log(content);
+            })();
+        }
+        function get_BPM(){
+          (async () => {
+            const rawResponse = await fetch('http://localhost:8080/bpm', {
+              method: 'GET',
+            });
+            const content = await rawResponse.json();
+            gotbpm.textContent = content;
+          })();
+        }
+        function get_MIN(){
+          (async () => {
+            const rawResponse = await fetch('http://localhost:8080/bpm/min', {
+              method: 'GET',
+            });
+            const content = await rawResponse.json();
+            gotmin.textContent = content;
+          })();
+        }
+        function get_MAX(){
+          (async () => {
+            const rawResponse = await fetch('http://localhost:8080/bpm/max', {
+              method: 'GET',
+            });
+            const content = await rawResponse.json();
+            gotmax.textContent = content;
+          })();
+        }
+        function delete_MIN(){
+          (async () => {
+          const rawResponse = await fetch('http://localhost:8080/bpm/min', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          });
+          const content = await rawResponse.json();
+          console.log(content);
+          })();
+        }
+        function delete_MAX(){
+          (async () => {
+          const rawResponse = await fetch('http://localhost:8080/bpm/max', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          });
+          const content = await rawResponse.json();
+          console.log(content);
+          })();
+        }
+    </script>
+</body>
+</html >
